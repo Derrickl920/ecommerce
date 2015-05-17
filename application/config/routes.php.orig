@@ -1,0 +1,14 @@
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> 10ff4172b494a53965b9a7b6450416b1d3ad79c8
+$route['default_controller'] = "main";
+$route['dashboards/orders'] = "orders";
+
+$route['404_override'] = '';
+
+$route['admin'] = 'dashboards/admin';
+
+//end of routes.php

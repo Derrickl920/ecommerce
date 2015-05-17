@@ -1,0 +1,53 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Dashboards extends CI_Controller {
+
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
+	public function admin()
+	{
+		$data['title'] = 'Admin Login';
+		$this->load->view('dashboards/login', $data);
+	}
+
+	public function orders()
+	{
+<<<<<<< HEAD
+		$email = $this->input->post('email');
+		$password = $this->input->post('password');
+		$this->load->model('dashboard');
+		$user = $this->dashboard->get_admin_by_email($email);
+
+		if($user && $user['password'] == $password)
+		{
+			$current_user = array(
+				'id' => $user['id'],
+				'email' => $user['email'],
+				'is_logged_in' => true
+				);
+			$this->session->set_userdata($current_user);
+			$data['title'] = 'All orders';
+			$this->load->view('templates/admin', $data);
+			$this->load->view('dashboards/orders');
+			$this->load->view('templates/footer');
+		}
+		else
+		{
+			$data['title'] = 'Admin Login';
+			$data['error'] = 'true';
+			$this->load->view('dashboards/login', $data);
+		}
+=======
+		$data['title'] = 'Orders';
+		$this->load->view('templates/header', $data);
+		$this->load->view('orders');
+		$this->load->view('templates/footer');
+>>>>>>> 10ff4172b494a53965b9a7b6450416b1d3ad79c8
+	}
+}
+
+?>

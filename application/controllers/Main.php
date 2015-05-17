@@ -1,0 +1,145 @@
+<?php
+
+	class Main extends CI_Controller {
+
+		public function __construct()
+		{
+			parent::__construct();
+			$this->load->model("soupmodel");
+		}
+		public function index()
+		{
+			$data['title'] = 'Soup2Door';
+			$this->load->view('templates/header', $data);
+			$products = $this->soupmodel->show_all_products();
+			$categories = $this->soupmodel->show_category();
+			$this->load->view("/home", array("categories"=>$categories, "products"=>$products));
+			$this->load->view('templates/footer');
+		}
+		public function cart()
+		{
+			$data['title'] = 'Cart';
+			$this->load->view('templates/header', $data);
+			$this->load->view('cart');
+			$this->load->view('templates/footer');
+		}
+
+		public function show()
+		{
+			$data['title'] = 'Show';
+			$this->load->view('templates/header', $data);
+			$this->load->view('show');
+			$this->load->view('templates/footer');
+		}
+
+		public function search()
+		{
+			$data['title'] = 'Search Results';
+			$this->load->view('templates/header', $data);
+			$search = $this->input->post("search");
+			$search = "%".$search;
+			$search .= "%";
+			$query = $this->soupmodel->search_item($search);
+			$categories = $this->soupmodel->show_category();
+			$this->load->view("/home", array("categories"=>$categories, "products"=>$query));
+		}
+
+
+		public function orders()
+		{
+			$data['title'] = 'Orders';
+			$this->load->view('templates/header', $data);
+			$this->load->view('orders');
+			$this->load->view('templates/footer');
+		}
+
+	
+	public function sale_info()
+	{
+		
+		$this->load->library('form_validation');
+		$this->form_validation->set_rules('s_first_name', 'First_name', 'required' );
+		$this->form_validation->set_rules('s_last_name', 'Last_name', 'required' );
+		$this->form_validation->set_rules('s_address', 'Address', 'required' );
+		$this->form_validation->set_rules('s_city', 'City', 'required' );
+		$this->form_validation->set_rules('s_State', 'State', 'required' );
+		$this->form_validation->set_rules('s_zip', 'Zip', 'required' );
+		$this->form_validation->set_rules('b_first_name', 'First_name', 'required' );
+		$this->form_validation->set_rules('b_last_name', 'Last_name', 'required' );
+		$this->form_validation->set_rules('b_address', 'Address', 'required' );
+		$this->form_validation->set_rules('b_city', 'City', 'required' );
+		$this->form_validation->set_rules('b_State', 'State', 'required' );
+		$this->form_validation->set_rules('b_zip', 'Zip', 'required' );
+		$this->form_validation->set_rules('b_c_card', 'C_card', 'required' );
+		$this->form_validation->set_rules('b_code', 'Code', 'required' );
+		$this->form_validation->set_rules('exp_month', 'P_month', 'required' );
+		$this->form_validation->set_rules('exp_year', 'P_year', 'required' );
+		$this->form_validation->set_rules('pay', 'Y', 'required' );
+	
+		 if ($this->form_validation->run() == FALSE)
+		{
+			$this->session->set_flashdata("login_error", "<h3 class='text-center bg-danger'>Invalid information please try again!<h3>");
+			redirect('/main/cart');
+		}
+		else
+		{
+			$this->load->model('talkToDB');
+			$userData = $this->input->post();
+			// var_dump($userData);
+			// die();
+			$this->talkToDB->saleData($userData);
+			// $add_user = $this->TalkToDatabase->add_user($userInfo);
+			
+
+			
+			// var_dump($this->input->post());
+			// echo "hi";
+		}
+	}
+
+		public function products()
+		{
+			$data['title'] = 'Products';
+			$this->load->view('templates/header', $data);
+			$this->load->view('products');
+			$this->load->view('templates/footer');
+		}
+	
+
+		public function group_category($category_id, $category_name)
+		{
+			$data['title'] = "Category: ". $category_name;
+			$this->load->view('templates/header', $data);
+			$products = $this->soupmodel->group_category($category_id);
+			$categories = $this->soupmodel->show_category();
+			$this->load->view("/home", array("categories"=>$categories, "products"=>$products));
+			$this->load->view('templates/footer');
+		}
+
+		public function sort_by()
+		{
+			if($this->input->post("sort_by")=="show_all")
+			{
+				redirect("/Main/index");
+			}
+
+			elseif($this->input->post("sort_by")=="price")
+			{
+				$products = $this->soupmodel->group_by_price();
+				$categories = $this->soupmodel->show_category();
+				$this->load->view("/home", array("categories"=>$categories, "products"=>$products));
+			}
+		}
+
+		public function product_details($product_id, $product_name)
+			{
+				$data['title'] = $product_name;
+				$this->load->view('templates/header', $data);
+				$product = $this->soupmodel->soup_detail($product_id);
+				$this->load->view("/product_details", array("product"=>$product));
+			}
+
+
+
+
+}
